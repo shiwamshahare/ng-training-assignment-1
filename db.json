@@ -1,0 +1,36 @@
+{
+  "users": [
+    {
+      "id": "2",
+      "AssignedTo": "user2",
+      "status": "In Progress",
+      "dueDate": "24/09/2024",
+      "priority": "high",
+      "comments": "This is good"
+    },
+    {
+      "id": "3",
+      "AssignedTo": "user3",
+      "status": "Not Started",
+      "dueDate": "24/09/2024",
+      "priority": "low",
+      "comments": "This is good"
+    },
+    {
+      "id": "4",
+      "AssignedTo": "user4",
+      "status": "Completed",
+      "dueDate": "24/09/2024",
+      "priority": "high",
+      "comments": "This is good"
+    },
+    {
+      "id": "3df8",
+      "AssignedTo": "user1",
+      "status": "Not Started",
+      "dueDate": "2024-09-03",
+      "priority": "Low",
+      "comments": "This Task is Good"
+    }
+  ]
+}
