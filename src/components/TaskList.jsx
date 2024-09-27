@@ -50,6 +50,7 @@ const TaskList = () => {
       console.error("Error in deleting ", err);
     }
   };
+
   const handleDeleteModal = (item) => {
     setDeleteTaskName(item);
     setDeleteModal(true);
@@ -83,65 +84,72 @@ const TaskList = () => {
   };
 
   return (
-    <div>
-      <div className="m-5 p-5">
-        <div className="shadow w-100 ">
-          <div className="d-flex bg-secondary-subtle border border-dark justify-content-between align-items-center border p-3 ">
-            <div className="d-grid justify-content-center align-items-center p-2 pb-0">
-              <span className="d-flex justify-content-center align-items-center gap-2">
-                <span
-                  className="bg-danger  d-flex justify-content-center align-items-center rounded-3 text-white"
-                  style={{ width: "3rem", height: "3rem" }}
-                >
-                  <FaListCheck />
-                </span>
-                <span className="d-flex flex-column h-100 ">
-                  <h5>Tasks</h5>
-                  <span>All Tasks</span>
-                </span>
+    <div className="m-3 m-sm-5 p-3 p-sm-5">
+      <div className="shadow w-100">
+        <div
+          className="d-sm-flex d-grid bg-secondary-subtle border border-dark justify-content-between align-items-center border p-3"
+          style={{ position: "relative" }}
+        >
+          <div className="d-grid justify-content-center align-items-center p-2 pb-0">
+            <span className="d-flex justify-content-center align-items-center gap-2">
+              <span
+                className="bg-danger d-flex justify-content-center align-items-center rounded-3 text-white"
+                style={{ width: "3rem", height: "3rem" }}
+              >
+                <FaListCheck />
               </span>
-              <span>{data.length} records</span>
-            </div>
-            <div className="d-grid gap-2 p-2 ">
-              <span>
-                <button
-                  className="btn text-primary border border-dark bg-light px-5"
-                  style={{ borderRadius: "0" }}
-                  onClick={() => {
-                    setIsEditing(false);
-                    setTaskModal(true);
-                  }}
-                >
-                  New Task
-                </button>
-                <button
-                  className="btn text-primary border border-dark bg-light px-5"
-                  style={{ borderRadius: "0" }}
-                  onClick={() => window.location.reload()}
-                >
-                  Refresh
-                </button>
+              <span className="d-grid d-sm-flex flex-column h-100">
+                <h5>Tasks</h5>
+                <span>All Tasks</span>
               </span>
-              <span className="d-flex justify-content-between border border-dark bg-light px-3">
-                <input
-                  type="text"
-                  placeholder="Search"
-                  className="border-0 w-100"
-                  onFocus={(e) => (e.target.style.outline = "none")}
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-                <button className="btn">
-                  <SlMagnifier />
-                </button>
-              </span>
-            </div>
+            </span>
+            <span
+              style={{ position: "absolute", bottom: "5px", left: "10px " }}
+            >
+              {data.length} records
+            </span>
           </div>
-          <table className="table table-hover border  border-secondary">
+          <div className="d-grid gap-2 p-2 ">
+            <span className="">
+              <button
+                className="btn text-primary border border-dark bg-light px-2 px-sm-5"
+                style={{ borderRadius: "0" }}
+                onClick={() => {
+                  setIsEditing(false);
+                  setTaskModal(true);
+                }}
+              >
+                New Task
+              </button>
+              <button
+                className="btn text-primary border border-dark bg-light px-2 px-sm-5  "
+                style={{ borderRadius: "0" }}
+                onClick={() => window.location.reload()}
+              >
+                Refresh
+              </button>
+            </span>
+            <span className="d-flex justify-content-between border border-dark bg-light px-3">
+              <input
+                type="text"
+                placeholder="Search"
+                className="border-0 w-100"
+                onFocus={(e) => (e.target.style.outline = "none")}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <button className="btn">
+                <SlMagnifier />
+              </button>
+            </span>
+          </div>
+        </div>
+        <div className="table-responsive-xl">
+          <table className="table table-hover border border-secondary">
             <thead>
               <tr>
                 <th>
-                  <input type="checkbox" name="" id="" />
+                  <input type="checkbox" />
                 </th>
                 <th>Assigned To</th>
                 <th>Status</th>
@@ -153,7 +161,9 @@ const TaskList = () => {
             <tbody>
               {dataResult.map((item) => (
                 <tr key={item.id}>
-                  <td>{<input type="checkbox" name="" id="" />}</td>
+                  <td>
+                    <input type="checkbox" />
+                  </td>
                   <td className="text-primary">{item.AssignedTo}</td>
                   <td>{item.status}</td>
                   <td>{item.dueDate}</td>
@@ -182,50 +192,48 @@ const TaskList = () => {
             </tbody>
           </table>
         </div>
-        {deleteModal && (
-          <Modal
-            show
-            size="lg"
-            aria-labelledby="contained-modal-title-vcenter "
-            centered
-            backdrop="static"
-            keyboard={false}
+      </div>
+      {deleteModal && (
+        <Modal
+          show
+          size="lg"
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+          backdrop="static"
+          keyboard={false}
+        >
+          <Modal.Header
+            closeButton
+            className="bg-danger text-white justify-content-center"
+            onClick={() => setDeleteModal(false)}
           >
-            <Modal.Header
-              closeButton
-              className="bg-danger text-white  justify-content-center"
+            <Modal.Title id="contained-modal-title-vcenter">Delete</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <p>Do you want to delete task: {deleteTaskName.AssignedTo}?</p>
+          </Modal.Body>
+          <Modal.Footer>
+            <button
+              className="btn btn-primary px-4"
               onClick={() => setDeleteModal(false)}
             >
-              <Modal.Title id="contained-modal-title-vcenter ">
-                Delete
-              </Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <p>Do you want to delete task : {deleteTaskName.AssignedTo} ?</p>
-            </Modal.Body>
-            <Modal.Footer>
-              <button
-                className="btn btn-primary px-4"
-                onClick={() => setDeleteModal(false)}
-              >
-                No
-              </button>
-              <button className="btn btn-secondary px-4" onClick={handleDelete}>
-                Yes
-              </button>
-            </Modal.Footer>
-          </Modal>
-        )}
-        {taskModal && (
-          <TaskForm
-            show={() => setTaskModal(true)}
-            handleClose={() => setTaskModal(false)}
-            handleSave={isEditing ? handleEdit : handleAdd}
-            taskData={isEditing ? editTaskName : null}
-            type={isEditing ? "Update" : "Save"}
-          />
-        )}
-      </div>
+              No
+            </button>
+            <button className="btn btn-secondary px-4" onClick={handleDelete}>
+              Yes
+            </button>
+          </Modal.Footer>
+        </Modal>
+      )}
+      {taskModal && (
+        <TaskForm
+          show={() => setTaskModal(true)}
+          handleClose={() => setTaskModal(false)}
+          handleSave={isEditing ? handleEdit : handleAdd}
+          taskData={isEditing ? editTaskName : null}
+          type={isEditing ? "Update" : "Save"}
+        />
+      )}
     </div>
   );
 };

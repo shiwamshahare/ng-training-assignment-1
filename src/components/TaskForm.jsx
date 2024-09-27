@@ -17,7 +17,7 @@ const TaskForm = ({ show, handleClose, handleSave, taskData, type }) => {
       setNewTask({
         AssignedTo: "user1",
         status: "Not Started",
-        dueDate: "2024-29-05",
+        dueDate: "2024-09-24",
         priority: "Low",
         comments: "This Task is Good",
       });
@@ -52,11 +52,8 @@ const TaskForm = ({ show, handleClose, handleSave, taskData, type }) => {
       </Modal.Header>
       <Modal.Body>
         <form>
-          <div
-            className="d-grid row"
-            style={{ gridTemplateColumns: "repeat(2,minmax(0,1fr))" }}
-          >
-            <div className="mb-3 d-flex flex-column flex-wrap-nowrap">
+          <div className="row g-3">
+            <div className="col-12 col-md-6">
               <label className="form-label">
                 <sup className="text-danger">*</sup>Assigned To
               </label>
@@ -77,7 +74,9 @@ const TaskForm = ({ show, handleClose, handleSave, taskData, type }) => {
                 <option value="user9">User9</option>
                 <option value="user10">User10</option>
               </select>
+            </div>
 
+            <div className="col-12 col-md-6">
               <label className="form-label">Due Date</label>
               <input
                 type="date"
@@ -88,11 +87,10 @@ const TaskForm = ({ show, handleClose, handleSave, taskData, type }) => {
               />
             </div>
 
-            <div className="mb-3 d-flex flex-column flex-wrap-nowrap">
+            <div className="col-12 col-md-6">
               <label className="form-label">
                 <sup className="text-danger">*</sup>Status
               </label>
-
               <select
                 name="status"
                 value={newTask.status}
@@ -103,7 +101,9 @@ const TaskForm = ({ show, handleClose, handleSave, taskData, type }) => {
                 <option value="In Progress">In Progress</option>
                 <option value="Completed">Completed</option>
               </select>
+            </div>
 
+            <div className="col-12 col-md-6">
               <label className="form-label">
                 <sup className="text-danger">*</sup>Priority
               </label>
@@ -119,7 +119,8 @@ const TaskForm = ({ show, handleClose, handleSave, taskData, type }) => {
               </select>
             </div>
           </div>
-          <div className="w-100 d-grid">
+
+          <div className="mb-3">
             <label className="form-label">Comments</label>
             <textarea
               className="form-control"
@@ -132,13 +133,10 @@ const TaskForm = ({ show, handleClose, handleSave, taskData, type }) => {
         </form>
       </Modal.Body>
       <Modal.Footer>
-        <button className="btn border border-2 px-4" onClick={handleClose}>
+        <button className="btn btn-outline-secondary" onClick={handleClose}>
           Cancel
         </button>
-        <button
-          className="btn btn-primary border border-2 px-4"
-          onClick={onSave}
-        >
+        <button className="btn btn-primary" onClick={onSave}>
           {type}
         </button>
       </Modal.Footer>
