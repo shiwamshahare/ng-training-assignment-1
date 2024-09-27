@@ -2,7 +2,13 @@ import React, { useEffect, useState } from "react";
 import Dropdown from "react-bootstrap/Dropdown";
 import Modal from "react-bootstrap/Modal";
 import { FaListCheck } from "react-icons/fa6";
-import { SlMagnifier } from "react-icons/sl";
+import {
+  FaAngleDoubleUp,
+  FaAngleDoubleDown,
+  FaAngleLeft,
+  FaAngleRight,
+  FaSearch,
+} from "react-icons/fa";
 import { service } from "../services/service";
 import TaskForm from "./TaskForm";
 
@@ -14,6 +20,10 @@ const TaskList = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
   const [taskModal, setTaskModal] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [recordsPerPage, setRecordsPerPage] = useState(4);
+  const [totalRecords, setTotalRecords] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
 
   useEffect(() => {
     fetchData();
@@ -24,6 +34,8 @@ const TaskList = () => {
       const tasks = await service.getAllTasks();
       setData(tasks);
       console.log(tasks);
+      setTotalRecords(tasks.length);
+      setTotalPages(Math.ceil(tasks.length / recordsPerPage));
     } catch (error) {
       console.error("Error fetching tasks:", error);
     }
@@ -39,6 +51,11 @@ const TaskList = () => {
       items.priority.toLowerCase().includes(caseLower)
     );
   });
+
+  const handlePageChange = (page, recordsPerPageValue = recordsPerPage) => {
+    setCurrentPage(page);
+    setRecordsPerPage(recordsPerPageValue);
+  };
 
   const handleDelete = async () => {
     try {
@@ -139,13 +156,13 @@ const TaskList = () => {
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
               <button className="btn">
-                <SlMagnifier />
+                <FaSearch />
               </button>
             </span>
           </div>
         </div>
-        <div className="table-responsive-xl">
-          <table className="table table-hover border border-secondary">
+        <div className="table-responsive-xl border border-secondary">
+          <table className="table table-hover ">
             <thead>
               <tr>
                 <th>
@@ -159,40 +176,56 @@ const TaskList = () => {
               </tr>
             </thead>
             <tbody>
-              {dataResult.map((item) => (
-                <tr key={item.id}>
-                  <td>
-                    <input type="checkbox" />
-                  </td>
-                  <td className="text-primary">{item.AssignedTo}</td>
-                  <td>{item.status}</td>
-                  <td>{item.dueDate}</td>
-                  <td>{item.priority}</td>
-                  <td>{item.comments}</td>
-                  <td>
-                    <Dropdown>
-                      <Dropdown.Toggle
-                        variant="none"
-                        id="dropdown-basic"
-                        className="border border-2"
-                      ></Dropdown.Toggle>
+              {dataResult
+                .slice(
+                  (currentPage - 1) * recordsPerPage,
+                  currentPage * recordsPerPage
+                )
+                .map((item) => (
+                  <tr key={item.id}>
+                    <td>
+                      <input type="checkbox" />
+                    </td>
+                    <td className="text-primary">{item.AssignedTo}</td>
+                    <td>{item.status}</td>
+                    <td>{item.dueDate}</td>
+                    <td>{item.priority}</td>
+                    <td>{item.comments}</td>
+                    <td>
+                      <Dropdown>
+                        <Dropdown.Toggle
+                          variant="none"
+                          id="dropdown-basic"
+                          className="border border-2"
+                        ></Dropdown.Toggle>
 
-                      <Dropdown.Menu>
-                        <Dropdown.Item onClick={() => handleEditModal(item)}>
-                          Edit
-                        </Dropdown.Item>
-                        <Dropdown.Item onClick={() => handleDeleteModal(item)}>
-                          Delete
-                        </Dropdown.Item>
-                      </Dropdown.Menu>
-                    </Dropdown>
-                  </td>
-                </tr>
-              ))}
+                        <Dropdown.Menu>
+                          <Dropdown.Item onClick={() => handleEditModal(item)}>
+                            Edit
+                          </Dropdown.Item>
+                          <Dropdown.Item
+                            onClick={() => handleDeleteModal(item)}
+                          >
+                            Delete
+                          </Dropdown.Item>
+                        </Dropdown.Menu>
+                      </Dropdown>
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>
       </div>
+      <Pagination
+        totalRecords={totalRecords}
+        recordsPerPage={recordsPerPage}
+        currentPage={currentPage}
+        onPageChange={handlePageChange}
+        totalPages={totalPages}
+        setTotalPages={setTotalPages}
+        setRecordsPerPage={setRecordsPerPage}
+      />
       {deleteModal && (
         <Modal
           show
@@ -234,6 +267,87 @@ const TaskList = () => {
           type={isEditing ? "Update" : "Save"}
         />
       )}
+    </div>
+  );
+};
+
+const Pagination = ({
+  recordsPerPage,
+  currentPage,
+  onPageChange,
+  totalPages,
+  setRecordsPerPage,
+}) => {
+  const handleFirstPage = () => onPageChange(1);
+  const handlePrevPage = () => onPageChange(Math.max(currentPage - 1, 1));
+  const handleNextPage = () =>
+    onPageChange(Math.min(currentPage + 1, totalPages));
+  const handleLastPage = () => onPageChange(totalPages);
+
+  const setRecords = (e) => {
+    setRecordsPerPage(e.target.value);
+  };
+
+  return (
+    <div className="d-sm-flex d-grid bg-secondary-subtle border border-dark justify-content-between align-items-center border p-3">
+      <div>
+        <select
+          name="limit"
+          id=""
+          className="form-select"
+          value={recordsPerPage}
+          onChange={setRecords}
+        >
+          <option value="5 ">5</option>
+          <option value="10">10</option>
+          <option value="15">15</option>
+          <option value="20">20</option>
+        </select>
+      </div>
+
+      <div className="d-flex bg-light pagination">
+        <li
+          onClick={handleFirstPage}
+          disabled={currentPage === 1}
+          className="px-4 p-2 page-item border border-dark page-link"
+          style={{ borderRadius: "0" }}
+        >
+          <FaAngleDoubleUp /> First
+        </li>
+
+        <li
+          onClick={handlePrevPage}
+          disabled={currentPage === 1}
+          className="px-4 p-2 page-item border border-dark page-link"
+          style={{ borderRadius: "0" }}
+        >
+          <FaAngleLeft /> Prev
+        </li>
+
+        <span className="px-4 p-2 page-item border border-dark active">
+          {currentPage}
+        </span>
+
+        <li
+          onClick={handleNextPage}
+          disabled={currentPage === totalPages}
+          className="px-4 p-2 page-item border border-dark page-link"
+          style={{ borderRadius: "0" }}
+        >
+          <FaAngleRight />
+          Next
+        </li>
+
+        <li
+          onClick={handleLastPage}
+          disabled={currentPage === totalPages}
+          className="px-4 p-2 page-item border border-dark page-link"
+          style={{ borderRadius: "0" }}
+        >
+          <FaAngleDoubleDown />
+          Last
+        </li>
+      </div>
     </div>
   );
 };
